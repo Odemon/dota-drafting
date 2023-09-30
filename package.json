@@ -1,0 +1,14 @@
+{
+  "name": "dota_draft",
+  "version": "1.0.0",
+  "description": "Dota drafting backend",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Otso Leppälä",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
