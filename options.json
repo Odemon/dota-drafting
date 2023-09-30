@@ -1,0 +1,5 @@
+{
+  "hostname": "api.openai.com",
+  "path": "/v1/engines/davinci-codex/completions",
+  "apiKey": "YOUR_API_KEY"
+}
