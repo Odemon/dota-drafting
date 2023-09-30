@@ -1,6 +1,6 @@
 // Import required modules
 const express = require('express');
-const http = require('http');
+const https = require('https'); // Use the 'https' module
 const fs = require('fs');
 
 // Read options file
@@ -9,42 +9,36 @@ const options = JSON.parse(fs.readFileSync('options.json', 'utf8'));
 // Create an instance of Express
 const app = express();
 
-const requestOptions = {
-  hostname: options.hostname,
-  path: options.path,
-  method: 'POST',
-  headers: {
-    'Authorization': `Bearer ${options.apiKey}`,
-    'Content-Type': 'application/json',
-  },
-};
-
-// Define a route that calls chatgpt and sends response
+// Define a route that calls ChatGPT and sends a response
 app.get('/', (req, res) => {
   try {
-    const apiKey = options.apiKey; 
+    console.log('Beginning of the app.get');
+    console.log(options.apiKey);
+    console.log(options.hostname);
+    console.log(options.path);
+    const apiKey = options.apiKey;
 
-    // What we ask from chatgpt
-    const textPrompt = 'I am in a dota2 drafting phase amd I am middle lane and in my team I have witch doctor and bane support, axe offlane and slark carry. Enemies have morphling, dragon knight, windranger and shadow shaman. Which mid I should pick?';
-
+    // What we ask from ChatGPT
+    const textPrompt =
+      'I am in a Dota 2 drafting phase, and I am middle lane. In my team, I have Witch Doctor and Bane support, Axe offlane, and Slark carry. Enemies have Morphling, Dragon Knight, Windranger, and Shadow Shaman. Which mid should I pick?';
 
     const requestOptions = {
-      hostname: options.hostname,
-      path: options.path,
+      hostname: 'api.openai.com',
+      path: '/v1/engines/davinci/completions',
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
-        'Host': url.host,
+        Host: 'api.openai.com',
       },
     };
 
     const postData = JSON.stringify({
       prompt: textPrompt,
-      max_tokens: 100, // Adjust the number of tokens as needed
+      max_tokens: 500, // Adjust the number of tokens as needed
     });
 
-    const request = http.request(requestOptions, (response) => {
+    const request = https.request(requestOptions, (response) => {
       let responseData = '';
 
       response.on('data', (chunk) => {
@@ -52,6 +46,7 @@ app.get('/', (req, res) => {
       });
 
       response.on('end', () => {
+        console.log('API Response:', responseData);
         // Extract the response from the API
         const answer = JSON.parse(responseData).choices[0].text;
 
@@ -72,7 +67,6 @@ app.get('/', (req, res) => {
     console.error('Error:', error);
     res.status(500).send('Internal Server Error');
   }
-
 });
 
 // Define the port for your server
